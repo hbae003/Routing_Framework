@@ -1,6 +1,7 @@
 
 #include "../Headers/grid.h"
 #include "../Headers/problem_object.h"
+#include "../Headers/my_node.h"
 #include <time.h>
 #include <cstdlib>
 #include <iostream>
@@ -8,6 +9,7 @@
 using std::cerr;
 using std::cout;
 using std::endl;
+//using Utilities::myNode;
 
 int main(int argc,char* argv[]) {
 

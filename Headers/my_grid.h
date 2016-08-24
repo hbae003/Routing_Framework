@@ -2,10 +2,8 @@
 #define _MY_GRID_H_
 
 #include "node.h"
-#include "my_node.h"
 #include "path.h"
 #include "grid.h"
-#include "my_grid.h"
 #include "problem_object.h"
 #include <vector>
 
@@ -13,7 +11,6 @@ using std::cerr;
 using std::endl;
 using std::string;
 using Utilities::Node;
-using Utilities::myNode;
 using Utilities::Edge;
 using Utilities::Path;
 using Utilities::ProblemObject;
@@ -21,7 +18,7 @@ using Utilities::ProblemObject;
 struct myConnection{
 	vector<Node*> border; 
 	string name;
-	bool found;
+	bool found; //found is used to find source and sink in algorithms 
 	Point source;
 	Point sink;
 };
@@ -30,6 +27,9 @@ class myGrid: public Grid{
 	private:
 		vector<vector<Node*> > map;
 		vector<myConnection> connections;
+		//vector<vector<Node*> > grid;
+	 	//int num_connections;
+	 	//vector<Path*> paths;
 	public:
 		//functions that are commented out are the same 
 		/* Constructors/Destructors */
@@ -48,7 +48,7 @@ class myGrid: public Grid{
 	    /* Mutators */
 	    void replace_node(Node* replacement_node);
 	    //void set_paths(vector<Path*> paths);
-	    //void add_path(Path* path);
+	    //void add_path(Path* path);s
 	    //void replace_path(int i, Path* path);
 	    //void remove_path(int i);
 

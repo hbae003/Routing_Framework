@@ -4,8 +4,11 @@
 	"height": 30,
 	"width": 30,
 
+	"blockerList": [
+	],
+
 	"routeList": [
-	{"name": "route1", "source_x": 5, "source_y": 5, "sink_x": 15, "sink_y": 15},
-	{"name": "route2", "source_x": 29, "source_y": 29, "sink_x": 0, "sink_y": 0}
+	{"name": "route1", "source_x": 7, "source_y": 5, "sink_x": 15, "sink_y": 15}
 	]
 }
+	

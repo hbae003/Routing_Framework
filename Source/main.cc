@@ -1,7 +1,6 @@
 
-#include "../Headers/grid.h"
 #include "../Headers/problem_object.h"
-#include "../Headers/my_node.h"
+#include "../Headers/my_grid.h"
 #include <time.h>
 #include <cstdlib>
 #include <iostream>
@@ -22,8 +21,9 @@ int main(int argc,char* argv[]) {
 	// EDIT FROM HERE DOWN
 
 	//Create your problem map object (in our example, we use a simple grid, you should create your own)
-	Grid g(first_problem);
-
+	//Grid g(first_problem);
+	myGrid g(first_problem);
+	std::cout << "made main" << endl;
 	/*
 	Note: we do not take into account the connections or blockers that exist in the Project Object
 	You should be accouting for these in your problem map objects (you should not be using Grid). You
@@ -38,8 +38,9 @@ int main(int argc,char* argv[]) {
 	Path: a series of straight line segments, with a single source and a single sink
 	Netlist: a series of stright line segments, with a single source and more than one sink
 	*/
-	vector<Path*> paths = g.test_algorithm();
-
+	//vector<Path*> paths = g.test_algorithm();
+	vector<Path*> paths = g.no_blockers();
+	std::cout << "made main2" << endl;
 	//Print the paths/netlists that you return from your algorithm
 	for(unsigned i = 0; i < paths.size(); i++) {
 		cout << "Path " << i << ": ";

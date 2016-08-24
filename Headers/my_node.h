@@ -14,7 +14,9 @@ namespace Utilities {
 
     class myNode: public Node {
         private:
-            vector<int> myCost;
+            //Point coord;
+            //vector<Edge*> connections;
+            //int cost;
         public:
             /* Constructors/Destructors */
             myNode(int x, int y, int cost=0);
@@ -22,10 +24,10 @@ namespace Utilities {
             ~myNode();
 
             /* Accessors */
-            int get_cost(int connection_num);
+            int get_cost();
 
             /* Mutators */
-            void set_cost(int connection_num, int cost);
+            void set_cost();
     };
 }
 

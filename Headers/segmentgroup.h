@@ -2,11 +2,14 @@
 #define _SEGMENT_GROUP_BASE_H_
 
 #include "pathsegment.h"
+#include "my_pathsegment.h"
+
 #include <vector>
 
 using std::vector;
 using Utilities::Point;
 using Utilities::PathSegment;
+using Utilities::myPathSegment;
 
 namespace Utilities {
     class SegmentGroup {

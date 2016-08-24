@@ -1,12 +1,13 @@
 #ifndef _PATH_BASE_H_
 #define _PATH_BASE_H_
 
-#include "segmentgroup.h"
+#include "my_segmentgroup.h"
 #include <vector>
 
 using std::vector;
 using Utilities::Point;
-using Utilities::PathSegment;
+using Utilities::myPathSegment;
+
 
 namespace Utilities {
     class Path: public SegmentGroup {

@@ -1,5 +1,4 @@
 #include "../Headers/my_grid.h"
-#include "../Headers/grid.h"
 #include "../Headers/edge.h"
 #include "../Headers/claim.h"
 
@@ -310,7 +309,7 @@ vector<Path*> myGrid::no_blockers(){
 				case RESET:
 					//push new pathsegment into temp_path and clear segment
 					//set the first point (sink) in segment as source of previous 
-					PathSegment *temp_seg = new PathSegment(*segment.at(segment.size() - 1), *segment.at(0));
+					PathSegment *temp_seg = new myPathSegment(*segment.at(segment.size() - 1), *segment.at(0));
 					temp_path.push_back(temp_seg);
 					temp_point = segment.at(segment.size() - 1);
 					segment.clear();
@@ -325,7 +324,7 @@ vector<Path*> myGrid::no_blockers(){
 				//push source of path onto segment because this method skips the last read 
 				segment.push_back(path_source);
 				//reverse source and sink 
-				PathSegment *temp_seg = new PathSegment(*segment.at(segment.size() - 1), *segment.at(0)); 
+				PathSegment *temp_seg = new myPathSegment(*segment.at(segment.size() - 1), *segment.at(0)); 
 				temp_path.push_back(temp_seg);
 				segment.clear();
 				std::cout << step << endl;

@@ -201,7 +201,6 @@ vector<Path*> myGrid::no_blockers(){
 
 		correct_path->set_source(*path_source);
 		correct_path->set_sink(*path_sink);
-		std::cout << this->connections.size() << endl;
 		step--;
 
 		while(step){
@@ -210,14 +209,12 @@ vector<Path*> myGrid::no_blockers(){
 				case NONE:
 					//choose starting direction 
 					//checks if top node exists and cost == step
-					std::cout << "CHANGE" << endl;
 					if(node_y != 0 && this->get_node(node_x, node_y - 1) != NULL 
 						&& this->get_node(node_x, node_y - 1)->get_cost() == step){
 						node_y--; 
 						temp_point = new Point(node_x, node_y); 
 						segment.push_back(temp_point);
 						dir = UP; 
-						std::cout << "UP" << endl;
 					}
 					//checks if bottom node exists and cost == step
 					else if(node_y != map.size() - 1 && this->get_node(node_x, node_y + 1) != NULL 
@@ -226,7 +223,6 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y); 
 						segment.push_back(temp_point);
 						dir = DOWN; 
-						std::cout << "DOWN" << endl;
 					}
 					//checks if left node exists and cost == step
 					else if(node_x != 0 && this->get_node(node_x - 1, node_y) != NULL 
@@ -235,7 +231,6 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y); 
 						segment.push_back(temp_point);
 						dir = LEFT; 
-						std::cout << "LEFT" << endl;
 					}
 					//checks if right node exists and cost == step
 					else if(node_x != map.at(0).size() - 1 && this->get_node(node_x + 1, node_y) != NULL 
@@ -244,7 +239,6 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y);
 						segment.push_back(temp_point);
 						dir = RIGHT; 
-						std::cout << "RIGHT" << endl;
 					}
 					step--;
 					break;
@@ -258,7 +252,6 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y);
 						segment.push_back(temp_point);
 						step--;
-						std::cout << "UP" << endl;
 					}
 					else{ dir = RESET; }
 					break;
@@ -272,7 +265,6 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y);
 						segment.push_back(temp_point);
 						step--;
-						std::cout << "DOWN" << endl;
 					}
 					else{ dir = RESET; }
 					break;
@@ -286,7 +278,6 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y);
 						segment.push_back(temp_point);
 						step--;
-						std::cout << "LEFT" << endl;
 					}
 					else{ dir = RESET; }
 					break;
@@ -300,7 +291,6 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y);
 						segment.push_back(temp_point);
 						step--;
-						std::cout << "RIGHT" << endl;
 					}
 					else{ dir = RESET; }
 					break;
@@ -314,7 +304,6 @@ vector<Path*> myGrid::no_blockers(){
 					segment.clear();
 					segment.push_back(temp_point);
 					dir = NONE;
-					std::cout << "RESET" << endl;
 					break;
 
 			}//end of switch
@@ -326,7 +315,6 @@ vector<Path*> myGrid::no_blockers(){
 				PathSegment *temp_seg = new PathSegment(*segment.at(segment.size() - 1), *segment.at(0)); 
 				temp_path.push_back(temp_seg);
 				segment.clear();
-				std::cout << step << endl;
 			}
 		}//end of retrace
 		//reverse temp_path by pushing into correct_path and push path into vector

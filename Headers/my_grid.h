@@ -44,6 +44,7 @@ class myGrid: public Grid{
 	    Node* get_node(Point coord);
 	    //vector<Path*> get_paths();
 	    //Path* get_path(int i);
+	    void print_map(int num);
 
 	    /* Mutators */
 	    void replace_node(Node* replacement_node);
@@ -51,6 +52,8 @@ class myGrid: public Grid{
 	    //void add_path(Path* path);s
 	    //void replace_path(int i, Path* path);
 	    //void remove_path(int i);
+	    void clear_map();
+	    void path_to_blockers();
 
 	    /* Algorithms */
 	    vector<Path*> no_blockers();

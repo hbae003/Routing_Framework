@@ -23,7 +23,6 @@ int main(int argc,char* argv[]) {
 	//Create your problem map object (in our example, we use a simple grid, you should create your own)
 	//Grid g(first_problem);
 	myGrid g(first_problem);
-	std::cout << "made main" << endl;
 	/*
 	Note: we do not take into account the connections or blockers that exist in the Project Object
 	You should be accouting for these in your problem map objects (you should not be using Grid). You
@@ -39,8 +38,8 @@ int main(int argc,char* argv[]) {
 	Netlist: a series of stright line segments, with a single source and more than one sink
 	*/
 	//vector<Path*> paths = g.test_algorithm();
+	g.print_map(0);
 	vector<Path*> paths = g.no_blockers();
-	std::cout << "made main2" << endl;
 	//Print the paths/netlists that you return from your algorithm
 	for(unsigned i = 0; i < paths.size(); i++) {
 		cout << "Path " << i << ": ";

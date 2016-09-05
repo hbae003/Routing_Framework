@@ -7,7 +7,7 @@ myGrid::myGrid(ProblemObject* problem_object): Grid(problem_object){
  	vector<Blocker> blockers = problem_object->get_blockers();
  	//saves connections 
  	vector<Connection> con = problem_object->get_connections();
- 	for (int i = 0; i < con.size(); i++){
+ 	for(int i = 0; i < con.size(); i++){
  		myConnection temp_c;
  		temp_c.name = con.at(i).name;
  		temp_c.source = con.at(i).source;
@@ -115,12 +115,12 @@ Node* myGrid::get_node(Point coord) {
 
 
 vector<Path*> myGrid::no_blockers(){
-	int step = 0; 
 	int node_x; 
 	int node_y;
 
 	//BFS one connection 
 	for(int i = 0; i < this->get_num_connections(); i++){
+		int step = 0; 
 		while(!this->connections.at(i).found){
 			vector<Node*> temp_b; 
 			step++;
@@ -172,7 +172,6 @@ vector<Path*> myGrid::no_blockers(){
 			temp_b.clear();
 
 		}//end of BFS while loop
-		std::cout << "end of BFS" << endl;
 		//at the end of BFS, step variable holds lee's number of sink
 		//start retrace
 		/* The algorithm for retrace first starts by using the step variable to determine 
@@ -309,7 +308,7 @@ vector<Path*> myGrid::no_blockers(){
 				case RESET:
 					//push new pathsegment into temp_path and clear segment
 					//set the first point (sink) in segment as source of previous 
-					PathSegment *temp_seg = new myPathSegment(*segment.at(segment.size() - 1), *segment.at(0));
+					PathSegment *temp_seg = new PathSegment(*segment.at(segment.size() - 1), *segment.at(0));
 					temp_path.push_back(temp_seg);
 					temp_point = segment.at(segment.size() - 1);
 					segment.clear();
@@ -324,7 +323,7 @@ vector<Path*> myGrid::no_blockers(){
 				//push source of path onto segment because this method skips the last read 
 				segment.push_back(path_source);
 				//reverse source and sink 
-				PathSegment *temp_seg = new myPathSegment(*segment.at(segment.size() - 1), *segment.at(0)); 
+				PathSegment *temp_seg = new PathSegment(*segment.at(segment.size() - 1), *segment.at(0)); 
 				temp_path.push_back(temp_seg);
 				segment.clear();
 				std::cout << step << endl;
@@ -334,12 +333,69 @@ vector<Path*> myGrid::no_blockers(){
 
 		//flip temp path and add segments into correct path
 		for(int j = temp_path.size() - 1; j >= 0; j--){
-			temp_path.at(j)->print();
 			correct_path->add_segment(temp_path.at(j));
 		}
 
 		this->add_path(correct_path);
+		this->clear_map();
 	}//end of first for loop
-
 	return this->get_paths();
 }//end of no_blockers 
+
+void myGrid::clear_map() {
+	std::cout << "Testing" << endl;
+
+	//go through the map and change all costs back to 0
+	for(int i = 0; i < this->map.size(); i++){
+		for(int j = 0; j < this->map.at(i).size(); j++){
+			if(this->get_node(i,j) != NULL){
+				this->get_node(i,j)->set_cost(0);
+			}
+		}
+	}
+}
+
+
+void myGrid::print_map(int num){
+	std::cout << endl;
+	myConnection temp = connections.at(num);
+	for(int i = 0; i < this->map.size(); i++){
+		for(int j = 0; j < this->map.at(i).size(); j++){
+			if(this->get_node(i,j) != NULL){
+				if(i == temp.source.x && j == temp.source.y){
+					std::cout << " S ";
+				}
+				else if(i == temp.sink.x && j == temp.sink.y){
+					std::cout << " F ";
+				}
+				else{
+					std::cout << " 0 ";
+				}
+			}
+			else{
+				std::cout << " X ";
+			}
+		}
+		std::cout << endl;
+	}
+}
+
+void myGrid::path_to_blockers(){
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

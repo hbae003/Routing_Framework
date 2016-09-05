@@ -5,9 +5,9 @@
 	"width": 500,
 
 	"blockerList": [
-	{"name": "blocker1", "width": 10, "height": 10, "x": 35, "y": 45},
-	{"name": "blocker2", "width": 10, "height": 15, "x": 55, "y": 120},
-	{"name": "blocker3", "width": 20, "height": 20, "x": 250, "y": 350}
+	// {"name": "blocker1", "width": 10, "height": 10, "x": 35, "y": 45},
+	// {"name": "blocker2", "width": 10, "height": 15, "x": 55, "y": 120},
+	// {"name": "blocker3", "width": 20, "height": 20, "x": 250, "y": 350}
 	],
 
 	"routeList": [

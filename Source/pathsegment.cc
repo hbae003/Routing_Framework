@@ -4,6 +4,7 @@
 #include <iostream>
 
 using std::cout;
+using std::endl;
 using Utilities::Point;
 
 void Utilities::PathSegment::update_length() {
@@ -79,9 +80,39 @@ void Utilities::PathSegment::print_sink() {
 }
 
 void Utilities::PathSegment::print() {
-    this->print_source();
-    cout << " -> ";
-    this->print_sink();
+    //x of source == x of sink    direction = False
+    //Y of source == y of sink    direction = True
+    //if source is at a greater position that sink, larger = true
+    //else larger = false
+    Point source = this->get_source(); 
+    Point sink = this->get_sink();
+    bool direction;
+    bool larger;
+    source.x == sink.x ? direction = true : direction = false; 
+    source.x > sink.x || source.y > sink.y ? larger = true : larger = false;
+    int size = this->get_length();
+    // cout << "(" << source.x << "," << source.y << ")"; 
+    // cout << " -> (" << sink.x << "," << sink.y << ")";
+    cout << "(" << source.x << "," << source.y << ")"; 
+    while(source.x != sink.x || source.y != sink.y){
+        if(direction && !larger){
+            cout << " -> (" << source.x << "," << source.y + 1 << ")"; 
+            source.y++;
+        }
+        else if(direction && larger){
+            cout << " -> (" << source.x << "," << source.y - 1 << ")"; 
+            source.y--;
+        }
+        else if(!direction && !larger){
+            cout << " -> (" << source.x + 1 << "," << source.y << ")";
+            source.x++;
+        }
+        else{
+            cout << " -> (" << source.x - 1 << "," << source.y << ")";
+            source.x--;
+        }
+    }
+    cout << endl;
 }
 
 void Utilities::PathSegment::set_source(Point source) {

@@ -18,6 +18,7 @@ using Utilities::ProblemObject;
 struct myConnection{
 	vector<Node*> border; 
 	string name;
+	bool intersect; 
 	bool found; //found is used to find source and sink in algorithms 
 	Point source;
 	Point sink;
@@ -37,6 +38,7 @@ class myGrid: public Grid{
 	    ~myGrid();
 
 	    /* Accessors */
+	    int connection_size(); 
 	    int get_width();
 	    int get_height();
 	    //int get_num_connections();
@@ -48,12 +50,14 @@ class myGrid: public Grid{
 
 	    /* Mutators */
 	    void replace_node(Node* replacement_node);
+	    void disable_intersect(int connection);
 	    //void set_paths(vector<Path*> paths);
 	    //void add_path(Path* path);s
 	    //void replace_path(int i, Path* path);
 	    //void remove_path(int i);
 	    void clear_map();
-	    void path_to_blockers();
+	    void path_to_blockers(int path);
+	    void blockers_helper(Point source, Point sink);
 
 	    /* Algorithms */
 	    vector<Path*> no_blockers();

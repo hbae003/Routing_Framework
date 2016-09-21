@@ -10,11 +10,17 @@ myGrid::myGrid(ProblemObject* problem_object): Grid(problem_object){
  	for(int i = 0; i < con.size(); i++){
  		myConnection temp_c;
  		temp_c.name = con.at(i).name;
+ 		temp_c.intersect = true;
  		temp_c.source = con.at(i).source;
  		temp_c.sink = con.at(i).sink;
  		temp_c.found = false;
  		temp_c.border.push_back(Grid::get_node(con.at(i).source));
  		this->connections.push_back(temp_c);
+ 		//check if source and sink are the same 
+ 		if(temp_c.source.x == temp_c.sink.x && temp_c.source.y == temp_c.sink.y){
+ 			std::cout << "Error: Source and Sink are the same for route number: " << i + 1 << endl;
+ 			exit(1);
+ 		}
  	}
 	int height = problem_object->get_height();
 	int width = problem_object->get_width();
@@ -76,6 +82,10 @@ myGrid::~myGrid(){
     }
 }
 
+int myGrid::connection_size(){
+	return this->connections.size();
+}
+
 int myGrid::get_width() {
 	//Assumes a perfect rectangle
 	return map.empty()?0:map.at(0).size();
@@ -113,13 +123,76 @@ Node* myGrid::get_node(Point coord) {
       return this->get_node(coord.x, coord.y);
 }
 
+void myGrid::disable_intersect(int connection){
+	this->connections.at(connection).intersect = false;
+}
+
+/*	First, create a temporary path object and initialize it to 
+	the path we need to change to blockers to disable any intersection. 
+	Go through segments vector and find the source and sink to every 
+	pathsegment. Change the nodes in path segment to null. 
+*/
+void myGrid::path_to_blockers(int path){
+	Path *temp_path = get_path(path);
+	Point source;
+	Point sink;
+	for(unsigned i = 0; i < temp_path->size(); i++){
+		source = temp_path->at(i)->get_source();
+		sink = temp_path->at(i)->get_sink();
+		blockers_helper(source, sink);
+	}
+}
+
+/*	Change all nodes between two points into blockers
+	by making the Node* = NULL. Only change to NULL if, 
+	the Node* is not already one.
+*/
+void myGrid::blockers_helper(Point source, Point sink){
+	Point trace = source; 
+	while(trace.x != sink.x || trace.y != sink.y){
+		map.at(trace.y).at(trace.x) = NULL;
+		
+		if(trace.x == sink.x){
+			trace.y < sink.y?trace.y++:trace.y--;
+		}
+		else if(trace.y == sink.y){
+			trace.x < sink.x?trace.x++:trace.x--;
+		}
+	}
+	if(get_node(trace) != NULL){
+		Node *temp = get_node(trace); 
+		map.at(trace.y).at(trace.x) = NULL;
+		delete temp;
+	}	
+}
 
 vector<Path*> myGrid::no_blockers(){
 	int node_x; 
 	int node_y;
+	vector<Path*> final_paths;
+	final_paths.resize(connections.size());
 
+	//create a vector to have paths with no intersections found first 
+	int z = 0;
+	bool ordered = false;
+	vector<int> order;
+	vector<int> order2;
+
+	for(int z = 0; z < this->get_num_connections(); z++){
+		if(this->connections.at(z).intersect == false){
+			order.push_back(z);
+		}
+		else{
+			order2.push_back(z);
+		}
+	}
+	while(!order2.empty()){
+		order.push_back(order2.back());
+		order2.pop_back();
+	}
 	//BFS one connection 
-	for(int i = 0; i < this->get_num_connections(); i++){
+	for(int z = 0; z < order.size(); z++){
+		int i = order.at(z);
 		int step = 0; 
 		while(!this->connections.at(i).found){
 			vector<Node*> temp_b; 
@@ -159,19 +232,24 @@ vector<Path*> myGrid::no_blockers(){
 			}//end of second for loop
 			//check if any nodes in temp_b are sinks 
 			//if any of them are, then found is set to true
-			for(int z = 0; z < temp_b.size(); z++){
-				if(temp_b.at(z)->get_x() == this->connections.at(i).sink.x 
-					&& temp_b.at(z)->get_y() == this->connections.at(i).sink.y){
+			for(int k = 0; k < temp_b.size(); k++){
+				if(temp_b.at(k)->get_x() == this->connections.at(i).sink.x 
+					&& temp_b.at(k)->get_y() == this->connections.at(i).sink.y){
 					this->connections.at(i).found = true;
-					z = temp_b.size();
-					temp_b.clear();
+					k = temp_b.size();
 				}
 			}
 			//set the new borders 
 			this->connections.at(i).border = temp_b;
 			temp_b.clear();
 
+			if(this->connections.at(i).border.empty()){
+				std::cout << "Error: Impossible path for route number: " << i + 1 << endl; 
+				exit(1);
+			}
+
 		}//end of BFS while loop
+		std::cout << "BFS" << endl;
 		//at the end of BFS, step variable holds lee's number of sink
 		//start retrace
 		/* The algorithm for retrace first starts by using the step variable to determine 
@@ -202,8 +280,15 @@ vector<Path*> myGrid::no_blockers(){
 		correct_path->set_source(*path_source);
 		correct_path->set_sink(*path_sink);
 		step--;
+		//if step == 0 here, this means that source and sink are next to each other
+		//make a flag to show that its next to each other
+		bool neighbors = false;
+		if(step ==  0){
+			neighbors = true;
+		} 
 
-		while(step){
+		std::cout << step << endl;
+		while(step > 0 || neighbors){
 			Point *temp_point; 
 			switch(dir){
 				case NONE:
@@ -215,6 +300,7 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y); 
 						segment.push_back(temp_point);
 						dir = UP; 
+						std::cout << "yes1" << endl;
 					}
 					//checks if bottom node exists and cost == step
 					else if(node_y != map.size() - 1 && this->get_node(node_x, node_y + 1) != NULL 
@@ -223,6 +309,7 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y); 
 						segment.push_back(temp_point);
 						dir = DOWN; 
+						std::cout << "yes2" << endl;
 					}
 					//checks if left node exists and cost == step
 					else if(node_x != 0 && this->get_node(node_x - 1, node_y) != NULL 
@@ -231,6 +318,7 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y); 
 						segment.push_back(temp_point);
 						dir = LEFT; 
+						std::cout << "yes3" << endl;
 					}
 					//checks if right node exists and cost == step
 					else if(node_x != map.at(0).size() - 1 && this->get_node(node_x + 1, node_y) != NULL 
@@ -239,6 +327,7 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y);
 						segment.push_back(temp_point);
 						dir = RIGHT; 
+						std::cout << "yes4" << endl;
 					}
 					step--;
 					break;
@@ -298,23 +387,73 @@ vector<Path*> myGrid::no_blockers(){
 				case RESET:
 					//push new pathsegment into temp_path and clear segment
 					//set the first point (sink) in segment as source of previous 
-					PathSegment *temp_seg = new PathSegment(*segment.at(segment.size() - 1), *segment.at(0));
+					PathSegment *temp_seg = new PathSegment(*segment.back(), *segment.front());
 					temp_path.push_back(temp_seg);
-					temp_point = segment.at(segment.size() - 1);
+					temp_point = segment.back();
 					segment.clear();
 					segment.push_back(temp_point);
-					dir = NONE;
+					if(step > 0){
+						dir = NONE;
+					}
 					break;
 
 			}//end of switch
 
-			if(step == 0 && segment.size() > 1){//retrace reaches source 
+			if((step == 0 && segment.size() > 1) || neighbors){//retrace reaches source 
 				//push source of path onto segment because this method skips the last read 
-				segment.push_back(path_source);
+				//check if source can be in path segment (straight line)
+				//if not create a new path segment
+				bool make_new = false;
+				switch(dir){
+					case NONE:
+						break;
+					case UP:
+						if(segment.back()->y != path_source->y + 1){
+							make_new = true;
+						}
+						break;
+					case DOWN:
+						if(segment.back()->y != path_source->y - 1){
+							std::cout << segment.size() << endl;
+							std::cout << segment.back()->x << segment.back()->y << endl;
+							std::cout << segment.front()->x << segment.front()->y << endl;
+							make_new = true;
+						}
+						break;
+					case LEFT:
+						if(segment.back()->x != path_source->x + 1){
+							make_new = true;
+						}
+						break;
+					case RIGHT:
+						if(segment.back()->x != path_source->x - 1){
+							make_new = true;
+						}
+						break;
+					case RESET:
+						break;
+				}
+				if(!make_new){
+					segment.push_back(path_source);
+				}
+				else{
+					PathSegment *temp_seg = new PathSegment(*segment.back(), *segment.front());
+					temp_path.push_back(temp_seg);
+					temp_point = segment.back();
+					segment.clear();
+					segment.push_back(temp_point);
+					segment.push_back(path_source);
+				}
 				//reverse source and sink 
-				PathSegment *temp_seg = new PathSegment(*segment.at(segment.size() - 1), *segment.at(0)); 
-				temp_path.push_back(temp_seg);
-				segment.clear();
+				//dont do anything if sink and source are next to each other
+				if(!neighbors){
+					PathSegment *temp_seg = new PathSegment(*segment.at(segment.size() - 1), *segment.at(0)); 
+					temp_path.push_back(temp_seg);
+					segment.clear();
+				}
+			}
+			if(neighbors){
+				neighbors = false;
 			}
 		}//end of retrace
 		//reverse temp_path by pushing into correct_path and push path into vector
@@ -324,15 +463,24 @@ vector<Path*> myGrid::no_blockers(){
 			correct_path->add_segment(temp_path.at(j));
 		}
 
+		/*first add the correct path into paths vector then check if the path allows intersection
+		if not, call path_to_vlockers to change path to blockers. Then clear the map of node costs.
+		Also add path to final paths to keep the order. At the end set paths to final paths.
+		*/
+		final_paths.at(i) = correct_path;
 		this->add_path(correct_path);
+
+		if(!connections.at(i).intersect){
+			this->path_to_blockers(z);
+			print_map(0);
+		}
 		this->clear_map();
 	}//end of first for loop
+	this->set_paths(final_paths);
 	return this->get_paths();
 }//end of no_blockers 
 
 void myGrid::clear_map() {
-	std::cout << "Testing" << endl;
-
 	//go through the map and change all costs back to 0
 	for(int i = 0; i < this->map.size(); i++){
 		for(int j = 0; j < this->map.at(i).size(); j++){
@@ -366,12 +514,8 @@ void myGrid::print_map(int num){
 		}
 		std::cout << endl;
 	}
+	std::cout << endl;
 }
-
-void myGrid::path_to_blockers(){
-	
-}
-
 
 
 

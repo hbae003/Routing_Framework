@@ -55,7 +55,6 @@ int main(int argc,char* argv[]) {
 		g.print_map(0);
 	}
 
-	cout << "passed print" << std::endl;
 	vector<Path*> paths = g.no_blockers();
 	//Print the paths/netlists that you return from your algorithm
 	for(unsigned i = 0; i < paths.size(); i++) {

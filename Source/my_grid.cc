@@ -18,7 +18,7 @@ myGrid::myGrid(ProblemObject* problem_object): Grid(problem_object){
  		this->connections.push_back(temp_c);
  		//check if source and sink are the same 
  		if(temp_c.source.x == temp_c.sink.x && temp_c.source.y == temp_c.sink.y){
- 			std::cout << "Error: Source and Sink are the same for route number: " << i + 1 << endl;
+ 			claim("Source and Sink are the same for route", Utilities::kError);
  			exit(1);
  		}
  	}
@@ -244,12 +244,11 @@ vector<Path*> myGrid::no_blockers(){
 			temp_b.clear();
 
 			if(this->connections.at(i).border.empty()){
-				std::cout << "Error: Impossible path for route number: " << i + 1 << endl; 
+				claim("Impossible path for route", Utilities::kError);
 				exit(1);
 			}
 
 		}//end of BFS while loop
-		std::cout << "BFS" << endl;
 		//at the end of BFS, step variable holds lee's number of sink
 		//start retrace
 		/* The algorithm for retrace first starts by using the step variable to determine 
@@ -287,7 +286,6 @@ vector<Path*> myGrid::no_blockers(){
 			neighbors = true;
 		} 
 
-		std::cout << step << endl;
 		while(step > 0 || neighbors){
 			Point *temp_point; 
 			switch(dir){
@@ -300,7 +298,6 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y); 
 						segment.push_back(temp_point);
 						dir = UP; 
-						std::cout << "yes1" << endl;
 					}
 					//checks if bottom node exists and cost == step
 					else if(node_y != map.size() - 1 && this->get_node(node_x, node_y + 1) != NULL 
@@ -309,7 +306,6 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y); 
 						segment.push_back(temp_point);
 						dir = DOWN; 
-						std::cout << "yes2" << endl;
 					}
 					//checks if left node exists and cost == step
 					else if(node_x != 0 && this->get_node(node_x - 1, node_y) != NULL 
@@ -318,7 +314,6 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y); 
 						segment.push_back(temp_point);
 						dir = LEFT; 
-						std::cout << "yes3" << endl;
 					}
 					//checks if right node exists and cost == step
 					else if(node_x != map.at(0).size() - 1 && this->get_node(node_x + 1, node_y) != NULL 
@@ -327,7 +322,6 @@ vector<Path*> myGrid::no_blockers(){
 						temp_point = new Point(node_x, node_y);
 						segment.push_back(temp_point);
 						dir = RIGHT; 
-						std::cout << "yes4" << endl;
 					}
 					step--;
 					break;
@@ -414,9 +408,6 @@ vector<Path*> myGrid::no_blockers(){
 						break;
 					case DOWN:
 						if(segment.back()->y != path_source->y - 1){
-							std::cout << segment.size() << endl;
-							std::cout << segment.back()->x << segment.back()->y << endl;
-							std::cout << segment.front()->x << segment.front()->y << endl;
 							make_new = true;
 						}
 						break;

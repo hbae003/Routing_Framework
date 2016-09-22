@@ -5,7 +5,8 @@
 	"width": 2,
 
 	"routeList": [
-	{"name": "route1", "source_x": 1, "source_y": 0, "sink_x": 0, "sink_y": 0}
+	{"name": "route1", "source_x": 0, "source_y": 0, "sink_x": 1, "sink_y": 0},
+	{"name": "route2", "source_x": 1, "source_y": 0, "sink_x": 0, "sink_y": 0}
 	]
 }
 

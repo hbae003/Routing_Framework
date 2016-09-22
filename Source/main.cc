@@ -43,30 +43,29 @@ int main(int argc,char* argv[]) {
 	//go through the connections in the problem and ask the user to choose which paths can intersect 
 	for(unsigned i = 0; i < g.connection_size(); i++){
 		char input;
-		cout << "Do you want path " << i << " to intersect other paths?(y/n): ";
+		cout << "Do you want route " << i + 1 << " to intersect other paths?(y/n): ";
 		cin >> input;
 		if(input == 'n'){
 			g.disable_intersect(i);
 		}
 	}
+	cout << endl;
 
 	//vector<Path*> paths = g.test_algorithm();
 	if(!(g.get_width() == 1 && g.get_height() == 2) && !(g.get_width() == 2 && g.get_height() == 1)){
 		g.print_map(0);
 	}
 
-	vector<Path*> paths = g.no_blockers();
+	vector<Path*> paths = g.algorithm();
 	//Print the paths/netlists that you return from your algorithm
 	for(unsigned i = 0; i < paths.size(); i++) {
-		cout << "Path " << i << ": ";
+		cout << "Path " << i + 1 << ": ";
 		paths.at(i)->print();
 		Path* temp = paths.at(i);
 		delete temp;
 	}
 
 	paths.clear();
-
 	delete first_problem;
-
 	return 0;
 }

@@ -2,7 +2,7 @@
 	"file_name": "test_3",
 
 	"height": 19,
-	"width": 19,
+	"width": 20,
 
 	"blockerList": [
 	{"name": "blocker1", "width": 3, "height": 5, "x": 1, "y": 1},

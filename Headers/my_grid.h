@@ -60,7 +60,7 @@ class myGrid: public Grid{
 	    void blockers_helper(Point source, Point sink);
 
 	    /* Algorithms */
-	    vector<Path*> no_blockers();
+	    vector<Path*> algorithm();
 };
 
 #endif

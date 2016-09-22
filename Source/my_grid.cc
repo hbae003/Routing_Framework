@@ -166,7 +166,28 @@ void myGrid::blockers_helper(Point source, Point sink){
 	}	
 }
 
-vector<Path*> myGrid::no_blockers(){
+/*
+This algorithm finds the paths for each route one at a time. It starts with a BFS on the 
+first connection and retraces back from the sink using Lee's numbers. After the path is found, 
+the map resets all Lees numbers to 0 and goes onto the next route. 
+
+Pre-BFS: In order to make sure that paths with no intersections have paths found first, two 
+vectors are used to organize the route numbers.
+
+BFS: Using a border vector containing all the outside points, the program loops until the sink 
+is found. If the border vector is empty and the sink hasn't been found, it means that the route 
+has an impossible path.
+
+Retrace: The algorithm for retrace first starts by using the step variable to determine the 
+direction to go. Every time the retrace changes direcion, a path segment is added to a temporary 
+path segment. Because the retrace moves backwards towards the source, the sources and sinks of 
+path segments are flipped. When a path is found, the path segments are pushed into a correct 
+path variable. The path is then pushed into the private my_grid vector paths. The neighbors flags 
+exists to tell the program that the sink and source are next to each other. We also have a vector 
+final paths so that the paths are in the conological order and not the order that was used to 
+make sure the non intersecting paths went first.
+*/
+vector<Path*> myGrid::algorithm(){
 	int node_x; 
 	int node_y;
 	vector<Path*> final_paths;
@@ -251,14 +272,6 @@ vector<Path*> myGrid::no_blockers(){
 		}//end of BFS while loop
 		//at the end of BFS, step variable holds lee's number of sink
 		//start retrace
-		/* The algorithm for retrace first starts by using the step variable to determine 
-		*  the direction to go. Every time the retrace changes direcion, a path segment 
-		*  is added to a temporary path segment. Because the retrace moves backwards towards the 
-		*  source, the sources and sinks of path segments are flipped. When a path is found, 
-		*  the path segments are pushed into a correct path variable. The path is then pushed 
-		*  into the private my_grid vector paths. 
-		*/
-
 		enum direction {NONE, UP, DOWN, LEFT, RIGHT, RESET} dir;
 		dir = NONE; 
 		
@@ -392,7 +405,6 @@ vector<Path*> myGrid::no_blockers(){
 					break;
 
 			}//end of switch
-
 			if((step == 0 && segment.size() > 1) || neighbors){//retrace reaches source 
 				//push source of path onto segment because this method skips the last read 
 				//check if source can be in path segment (straight line)
@@ -460,7 +472,6 @@ vector<Path*> myGrid::no_blockers(){
 		*/
 		final_paths.at(i) = correct_path;
 		this->add_path(correct_path);
-
 		if(!connections.at(i).intersect){
 			this->path_to_blockers(z);
 			print_map(0);
@@ -474,9 +485,9 @@ vector<Path*> myGrid::no_blockers(){
 void myGrid::clear_map() {
 	//go through the map and change all costs back to 0
 	for(int i = 0; i < this->map.size(); i++){
-		for(int j = 0; j < this->map.at(i).size(); j++){
-			if(this->get_node(i,j) != NULL){
-				this->get_node(i,j)->set_cost(0);
+		for(int j = 0; j < this->map.at(0).size(); j++){
+			if(this->get_node(j,i) != NULL){
+				this->get_node(j,i)->set_cost(0);
 			}
 		}
 	}
@@ -484,28 +495,28 @@ void myGrid::clear_map() {
 
 
 void myGrid::print_map(int num){
-	std::cout << endl;
-	myConnection temp = connections.at(num);
-	for(int i = 0; i < this->map.size(); i++){
-		for(int j = 0; j < this->map.at(i).size(); j++){
-			if(this->get_node(i,j) != NULL){
-				if(i == temp.source.x && j == temp.source.y){
-					std::cout << " S ";
-				}
-				else if(i == temp.sink.x && j == temp.sink.y){
-					std::cout << " F ";
-				}
-				else{
-					std::cout << " 0 ";
-				}
-			}
-			else{
-				std::cout << " X ";
-			}
-		}
-		std::cout << endl;
-	}
-	std::cout << endl;
+	// std::cout << endl;
+	// myConnection temp = connections.at(num);
+	// for(int i = 0; i < this->map.size(); i++){
+	// 	for(int j = 0; j < this->map.at(i).size(); j++){
+	// 		if(this->get_node(i,j) != NULL){
+	// 			if(i == temp.source.x && j == temp.source.y){
+	// 				std::cout << " S ";
+	// 			}
+	// 			else if(i == temp.sink.x && j == temp.sink.y){
+	// 				std::cout << " F ";
+	// 			}
+	// 			else{
+	// 				std::cout << " 0 ";
+	// 			}
+	// 		}
+	// 		else{
+	// 			std::cout << " X ";
+	// 		}
+	// 	}
+	// 	std::cout << endl;
+	// }
+	// std::cout << endl;
 }
 
 

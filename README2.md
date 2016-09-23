@@ -32,7 +32,7 @@ and crashes the program.
 - Blockers cannot be place on x = 0 or y = 0. 
 
 Grid Orientation: 
-
+See Raw version of README2.md
 _________________________ y-axis
 |
 |

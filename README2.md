@@ -29,3 +29,26 @@ Known Bugs:
 exeption of out_of_range vector.
 - Print map only works if map dimentions are the same. Otherwise, it throws an out_of_range error 
 and crashes the program. 
+- Blockers cannot be place on x = 0 or y = 0. 
+
+Grid Orientation: 
+
+_________________________ y-axis
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+x-axis
+
+^
+|	blocker width
+v
+
+<---->	blocker height
